@@ -6,28 +6,48 @@ export enum LogLevel {
 }
 
 export interface ILogger {
-  debug(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
+  debug(message: string, ...args: unknown[]): void;
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
 }
 
 export class Logger implements ILogger {
-  private static instance: Logger;
-  private logLevel: LogLevel = LogLevel.INFO;
+  private static instances: Map<string, Logger> = new Map();
+  private static globalLogLevel: LogLevel = LogLevel.INFO;
+  private logLevel: LogLevel;
   private tag: string;
 
   constructor(tag: string = 'VideoCall') {
     this.tag = tag;
+    this.logLevel = Logger.globalLogLevel;
   }
 
-  public static getInstance(tag?: string): Logger {
-    if (!Logger.instance) {
-      Logger.instance = new Logger(tag);
+  /**
+   * Get a logger instance for a specific tag.
+   * Each tag gets its own logger instance with proper namespacing.
+   */
+  public static getInstance(tag: string = 'VideoCall'): Logger {
+    if (!Logger.instances.has(tag)) {
+      Logger.instances.set(tag, new Logger(tag));
     }
-    return Logger.instance;
+    return Logger.instances.get(tag)!;
   }
 
+  /**
+   * Set the global log level that applies to all new logger instances.
+   */
+  public static setGlobalLogLevel(level: LogLevel): void {
+    Logger.globalLogLevel = level;
+    // Update all existing instances
+    for (const logger of Logger.instances.values()) {
+      logger.logLevel = level;
+    }
+  }
+
+  /**
+   * Set log level for this specific logger instance.
+   */
   public setLogLevel(level: LogLevel): void {
     this.logLevel = level;
   }
@@ -41,25 +61,25 @@ export class Logger implements ILogger {
     return `[${timestamp}] [${this.tag}] [${level}] ${message}`;
   }
 
-  public debug(message: string, ...args: any[]): void {
+  public debug(message: string, ...args: unknown[]): void {
     if (this.shouldLog(LogLevel.DEBUG)) {
       console.debug(this.formatMessage('DEBUG', message), ...args);
     }
   }
 
-  public info(message: string, ...args: any[]): void {
+  public info(message: string, ...args: unknown[]): void {
     if (this.shouldLog(LogLevel.INFO)) {
       console.info(this.formatMessage('INFO', message), ...args);
     }
   }
 
-  public warn(message: string, ...args: any[]): void {
+  public warn(message: string, ...args: unknown[]): void {
     if (this.shouldLog(LogLevel.WARN)) {
       console.warn(this.formatMessage('WARN', message), ...args);
     }
   }
 
-  public error(message: string, ...args: any[]): void {
+  public error(message: string, ...args: unknown[]): void {
     if (this.shouldLog(LogLevel.ERROR)) {
       console.error(this.formatMessage('ERROR', message), ...args);
     }

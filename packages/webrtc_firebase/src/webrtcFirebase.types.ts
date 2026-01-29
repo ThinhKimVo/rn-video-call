@@ -1,5 +1,5 @@
 import {IUserInfo} from "@rn-video-call/firebase_user";
-import {MediaStream} from "react-native-webrtc";
+import {MediaStream, MediaStreamTrack} from "react-native-webrtc";
 import {ErrorHandler} from "@rn-video-call/base";
 
 export type SetUpUserCallbacksType = {
@@ -31,4 +31,46 @@ export interface SessionConstraints {
     OfferToReceiveVideo: boolean;
     VoiceActivityDetection: boolean;
   };
+}
+
+/**
+ * Firestore document data for user signaling (offer/answer exchange)
+ */
+export interface UserDocumentData {
+  offer?: RTCSessionDescriptionInit;
+  answer?: RTCSessionDescriptionInit;
+}
+
+/**
+ * Firestore document data for ICE candidates
+ */
+export interface IceCandidateData {
+  candidate: string;
+  sdpMid: string | null;
+  sdpMLineIndex: number | null;
+}
+
+/**
+ * Media device information returned from enumerateDevices
+ */
+export interface MediaDeviceInfoType {
+  deviceId: string;
+  groupId: string;
+  kind: 'audioinput' | 'audiooutput' | 'videoinput';
+  label: string;
+}
+
+/**
+ * Extended MediaStreamTrack type for react-native-webrtc
+ * which includes the private _switchCamera method
+ */
+export interface SwitchableCameraTrack extends MediaStreamTrack {
+  _switchCamera: () => void;
+}
+
+/**
+ * Type guard to check if a track has the _switchCamera method
+ */
+export function isSwitchableCameraTrack(track: MediaStreamTrack): track is SwitchableCameraTrack {
+  return '_switchCamera' in track && typeof (track as SwitchableCameraTrack)._switchCamera === 'function';
 }

@@ -4,9 +4,12 @@ import React, {
   useEffect,
   useReducer,
 } from "react";
+import { Logger } from "@rn-video-call/base";
 import { IUserInfo } from "./interfaces";
 import { IUserContext, setUserInfo, userReducer } from "./reducer";
 import { createUserProfile, FirestoreUserServices } from "./services";
+
+const logger = Logger.getInstance('FirestoreUserProvider');
 
 const firestoreUserServices = FirestoreUserServices.getInstance();
 
@@ -15,9 +18,7 @@ interface FirestoreUserProviderProps extends PropsWithChildren {
   prefix?: string;
 }
 
-export const FirestoreUserContext = createContext<IUserContext>(
-  {} as IUserContext
-);
+export const FirestoreUserContext = createContext<IUserContext | null>(null);
 export const FirestoreUserProvider: React.FC<FirestoreUserProviderProps> = ({
   userInfo,
   children,
@@ -29,8 +30,9 @@ export const FirestoreUserProvider: React.FC<FirestoreUserProviderProps> = ({
       createUserProfile(userInfo.id, userInfo.name).then(() => {
         dispatch(setUserInfo(userInfo));
         firestoreUserServices.configuration({ userInfo });
-      }).catch((error) => {
-        console.warn('Firebase not configured, user profile creation skipped:', error.message);
+      }).catch((error: unknown) => {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.warn('Firebase not configured, user profile creation skipped:', errorMessage);
         dispatch(setUserInfo(userInfo));
         firestoreUserServices.configuration({ userInfo });
       });

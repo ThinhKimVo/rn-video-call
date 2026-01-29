@@ -1,7 +1,9 @@
-
+import { Logger } from "@rn-video-call/base";
 import {
   type IUserInfo,
 } from '../interfaces';
+
+const logger = Logger.getInstance('FirestoreUserServices');
 
 interface FirestoreUserProps {
   userInfo?: IUserInfo;
@@ -23,7 +25,7 @@ export class FirestoreUserServices {
 
   get userId(): string {
     if (!this.userInfo?.id) {
-      console.error('Please set userInfo before call chat  function');
+      logger.error('Please set userInfo before calling chat function');
     }
     return this.userInfo?.id || '';
   }

@@ -2,8 +2,16 @@ import {useContext} from 'react';
 import {FirestoreUserContext} from './FirestoreUserProvider';
 import {UserState} from './reducer';
 
+/**
+ * Hook to access the Firestore user context.
+ * Throws an error if used outside of FirestoreUserProvider.
+ */
 const useUserContext = () => {
-  return useContext(FirestoreUserContext);
+  const context = useContext(FirestoreUserContext);
+  if (!context) {
+    throw new Error('useUserContext must be used within a FirestoreUserProvider');
+  }
+  return context;
 };
 
 /**

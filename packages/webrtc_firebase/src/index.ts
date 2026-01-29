@@ -5,4 +5,5 @@ import * as videoCallActions from './reducer/action'
 import * as videoCallSelectors from './reducer/selectors'
 
 export * from './hooks'
+export * from './services'
 export {VideoComponent, WebRTCFirebase, VideoCallProvider, videoCallActions, videoCallSelectors}

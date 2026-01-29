@@ -3,7 +3,6 @@ import React, {
   PropsWithChildren,
   useEffect,
   useReducer,
-  useRef,
 } from "react";
 import type { IVideoCallContext } from "./interfaces";
 import {
@@ -20,9 +19,7 @@ const WebRTCFirebaseService = WebRTCFirebase.getInstance()
 
 interface VideoCallProviderProps extends PropsWithChildren {}
 
-export const VideoCallContext = createContext<IVideoCallContext>(
-  {} as IVideoCallContext
-);
+export const VideoCallContext = createContext<IVideoCallContext | null>(null);
 
 export const VideoCallProvider: React.FC<VideoCallProviderProps> = ({
   children,
@@ -33,14 +30,20 @@ export const VideoCallProvider: React.FC<VideoCallProviderProps> = ({
   const userInfo = userState?.userInfo || null
 
   useEffect(() => {
-    if (userInfo?.id) {
-      WebRTCFirebaseService.setupCallbacks({
-        userInfo,
-        setLocalStream: (stream: MediaStream | undefined) => dispatch(setLocalStream(stream)),
-        setRemoteStream: (stream: MediaStream | undefined) => dispatch(setRemoteStream(stream)),
-        setGettingCall: (isCalling: boolean) => dispatch(setGettingCall(isCalling)),
-      });
+    if (!userInfo?.id) {
+      return;
     }
+
+    WebRTCFirebaseService.setupCallbacks({
+      userInfo,
+      setLocalStream: (stream: MediaStream | undefined) => dispatch(setLocalStream(stream)),
+      setRemoteStream: (stream: MediaStream | undefined) => dispatch(setRemoteStream(stream)),
+      setGettingCall: (isCalling: boolean) => dispatch(setGettingCall(isCalling)),
+    });
+
+    return () => {
+      WebRTCFirebaseService.cleanup();
+    };
   }, [userInfo]);
 
   return (
