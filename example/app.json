@@ -14,13 +14,15 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sts.rnvideocall",
-      "sourceDir": "./ios"
+      "sourceDir": "./ios",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "sourceDir": "./android"
+        "sourceDir": "./android",
+        "googleServicesFile": "./google-services.json"
       },
       "package": "com.sts.rnvideocall"
     },

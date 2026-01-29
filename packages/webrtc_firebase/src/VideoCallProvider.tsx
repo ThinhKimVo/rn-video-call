@@ -12,10 +12,11 @@ import {
   setRemoteStream,
   videoCallReducer,
 } from "./reducer";
-import { WebRTCFirbase } from "./webrtc_firebase_proxy";
+import { WebRTCFirebase } from "./webrtc_firebase_proxy";
+import { MediaStream } from "react-native-webrtc";
 import { useUserContext } from "@rn-video-call/firebase_user";
 
-const WebRTCFirbaseService = WebRTCFirbase.getInstance()
+const WebRTCFirebaseService = WebRTCFirebase.getInstance()
 
 interface VideoCallProviderProps extends PropsWithChildren {}
 
@@ -33,11 +34,11 @@ export const VideoCallProvider: React.FC<VideoCallProviderProps> = ({
 
   useEffect(() => {
     if (userInfo?.id) {
-      WebRTCFirbaseService.setupCallbacks({
+      WebRTCFirebaseService.setupCallbacks({
         userInfo,
-        setLocalStream: (stream) => dispatch(setLocalStream(stream)),
-        setRemoteStream: (stream) => dispatch(setRemoteStream(stream)),
-        setGettingCall: (isCalling) => dispatch(setGettingCall(isCalling)),
+        setLocalStream: (stream: MediaStream | undefined) => dispatch(setLocalStream(stream)),
+        setRemoteStream: (stream: MediaStream | undefined) => dispatch(setRemoteStream(stream)),
+        setGettingCall: (isCalling: boolean) => dispatch(setGettingCall(isCalling)),
       });
     }
   }, [userInfo]);

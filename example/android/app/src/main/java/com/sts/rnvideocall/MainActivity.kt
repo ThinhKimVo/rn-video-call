@@ -1,4 +1,4 @@
-package expo.modules.rnvideocall.example
+package com.sts.rnvideocall
 
 import android.os.Build
 import android.os.Bundle

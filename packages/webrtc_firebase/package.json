@@ -18,8 +18,8 @@
   "dependencies": {
     "@rn-video-call/base": "*",
     "@rn-video-call/firebase_user": "*",
-    "react-native-web": "~0.18.7",
-    "react-native-webrtc": "^124.0.3"
+    "react-native-web": "~0.21.2",
+    "react-native-webrtc": "^124.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",    

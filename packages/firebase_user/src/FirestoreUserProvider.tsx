@@ -29,6 +29,10 @@ export const FirestoreUserProvider: React.FC<FirestoreUserProviderProps> = ({
       createUserProfile(userInfo.id, userInfo.name).then(() => {
         dispatch(setUserInfo(userInfo));
         firestoreUserServices.configuration({ userInfo });
+      }).catch((error) => {
+        console.warn('Firebase not configured, user profile creation skipped:', error.message);
+        dispatch(setUserInfo(userInfo));
+        firestoreUserServices.configuration({ userInfo });
       });
     }
   }, [userInfo]);

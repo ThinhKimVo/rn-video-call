@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "839327219669",
     "project_id": "rn-video-chat-4960c",
-    "storage_bucket": "rn-video-chat-4960c.appspot.com"
+    "storage_bucket": "rn-video-chat-4960c.firebasestorage.app"
   },
   "client": [
     {
